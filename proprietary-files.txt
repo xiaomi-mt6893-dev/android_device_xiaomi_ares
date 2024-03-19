@@ -1,0 +1,5 @@
+# Unpinned blobs from ares-user 12 SP1A.210812.016 V816.0.2.0.TKJINXM release-keys
+
+# AEE
+vendor/lib/libaedv.so
+vendor/lib64/libaedv.so
