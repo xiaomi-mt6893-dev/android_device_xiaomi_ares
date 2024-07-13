@@ -82,5 +82,8 @@ TARGET_COPY_OUT_VENDOR := vendor
 
 BOARD_USES_METADATA_PARTITION := true
 
+# Recovery
+TARGET_RECOVERY_FSTAB := $(DEVICE_PATH)/rootdir/etc/fstab.mt6893
+
 # Inherit the proprietary files
 include vendor/xiaomi/ares/BoardConfigVendor.mk
