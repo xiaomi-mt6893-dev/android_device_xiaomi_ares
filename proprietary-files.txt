@@ -3,3 +3,6 @@
 # AEE
 vendor/lib/libaedv.so
 vendor/lib64/libaedv.so
+
+# Gatekeeper
+vendor/lib64/hw/gatekeeper.beanpod.so
