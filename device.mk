@@ -4,6 +4,12 @@
 # SPDX-License-Identifier: Apache-2.0
 #
 
+# Enable updating of APEXes
+$(call inherit-product, $(SRC_TARGET_DIR)/product/updatable_apex.mk)
+
+# Dalvik VM Configuration
+$(call inherit-product, frameworks/native/build/phone-xhdpi-6144-dalvik-heap.mk)
+
 # Inherit virtual_ab_ota product
 $(call inherit-product, $(SRC_TARGET_DIR)/product/virtual_ab_ota.mk)
 
@@ -12,8 +18,9 @@ $(call inherit-product, $(SRC_TARGET_DIR)/product/emulated_storage.mk)
 
 # Boot control HAL
 PRODUCT_PACKAGES += \
-    com.android.hardware.boot \
-    android.hardware.boot-service.default_recovery
+    android.hardware.boot@1.2-impl \
+    android.hardware.boot@1.2-impl.recovery \
+    android.hardware.boot@1.2-service
 
 # A/B
 PRODUCT_PACKAGES += \
@@ -49,15 +56,18 @@ PRODUCT_PACKAGES += \
     android.hardware.gatekeeper@1.0-impl \
     android.hardware.gatekeeper@1.0-service
 
+# Kernel
+PRODUCT_COPY_FILES += \
+    $(LOCAL_PATH)-kernel/kernel:kernel
+
 # Keymaster
 PRODUCT_PACKAGES += \
-    android.hardware.keymaster@4.0.vendor \
-    libkeymaster4.vendor \
-    libkeymaster4support.vendor \
-    libkeymaster_portable.vendor \
-    libkeymaster_messages.vendor \
-    libsoft_attestation_cert.vendor \
-    libpuresoftkeymasterdevice.vendor
+    android.hardware.keymaster@4.0.vendor:64
+
+PRODUCT_PACKAGES += \
+    libkeymaster4.vendor:64 \
+    libkeymaster4support.vendor:64 \
+    libsoft_attestation_cert.vendor:64
 
 # Display
 PRODUCT_PACKAGES += \
@@ -67,6 +77,18 @@ PRODUCT_PACKAGES += \
 
 PRODUCT_PACKAGES += \
     libdrm.vendor \
+    libutils-v32
+
+# DRM
+PRODUCT_PACKAGES += \
+    android.hardware.drm-service.clearkey
+
+PRODUCT_PACKAGES += \
+    android.hardware.drm@1.4.vendor
+
+PRODUCT_PACKAGES += \
+    libdrmclearkeyplugin \
+    libmockdrmcryptoplugin
 
 # Dynamic Partitions
 PRODUCT_USE_DYNAMIC_PARTITIONS := true
@@ -81,8 +103,17 @@ PRODUCT_ENFORCE_RRO_TARGETS := *
 
 # Health
 PRODUCT_PACKAGES += \
-    android.hardware.health-service.mediatek \
-    android.hardware.health-service.mediatek-recovery
+    android.hardware.health@2.1-impl \
+    android.hardware.health@2.1-impl.recovery \
+    android.hardware.health@2.1-service
+
+# HIDL
+PRODUCT_PACKAGES += \
+    libhidltransport \
+    libhidltransport.vendor \
+    libhwbinder \
+    libhwbinder.vendor \
+    android.hidl.allocator@1.0.vendor
 
 # Permissions
 PRODUCT_COPY_FILES += \
@@ -148,6 +179,7 @@ PRODUCT_PACKAGES += \
     fstab.mt6893.ramdisk \
 
 PRODUCT_PACKAGES += \
+    init.cgroup.rc \
     init.connectivity.rc \
     init.mi_thermald.rc \
     init.modem.rc \
@@ -160,6 +192,10 @@ PRODUCT_PACKAGES += \
 PRODUCT_PACKAGES += \
     init.recovery.mt6893.rc
 
+# Secure Element
+PRODUCT_PACKAGES += \
+    android.hardware.secure_element@1.2.vendor
+
 # Shipping API level
 PRODUCT_SHIPPING_API_LEVEL := 30
 
@@ -167,6 +203,33 @@ PRODUCT_SHIPPING_API_LEVEL := 30
 PRODUCT_SOONG_NAMESPACES += \
     $(LOCAL_PATH) \
     hardware/mediatek
+
+# Thermal
+PRODUCT_PACKAGES += \
+    android.hardware.thermal@1.0-impl \
+    android.hardware.thermal@2.0.vendor
+
+# Sensors
+PRODUCT_PACKAGES += \
+    android.hardware.sensors@2.1.vendor:64 \
+    android.hardware.sensors@2.1-service.ares-multihal
+
+PRODUCT_PACKAGES += \
+    libsensorndkbridge
+
+# USB
+PRODUCT_PACKAGES += \
+    android.hardware.usb@1.3.vendor \
+    android.hardware.usb.gadget@1.1.vendor
+
+# Vibrator
+$(call soong_config_set, vibrator, vibratortargets, vibratoraidlV2target)
+
+PRODUCT_PACKAGES += \
+    vendor.qti.hardware.vibrator.service
+
+PRODUCT_COPY_FILES += \
+    vendor/qcom/opensource/vibrator/excluded-input-devices.xml:$(TARGET_COPY_OUT_VENDOR)/etc/excluded-input-devices.xml
 
 # Inherit the proprietary files
 $(call inherit-product, vendor/xiaomi/ares/ares-vendor.mk)
